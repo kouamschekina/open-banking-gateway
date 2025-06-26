@@ -96,6 +96,7 @@ then
 else
   print_message "Nothing to commit..."
 fi
+git push --set-upstream "${REMOTE_REPO}" "${RELEASE_BRANCH}"
 
 build_release_modules >> ${OUT}
 cd "${GIT_REPO_DIR}"
@@ -107,6 +108,9 @@ git_merge_theirs "${RELEASE_BRANCH}"
 
 # create release tag on master
 RELEASE_TAG=$(format_release_tag "${RELEASE_VERSION}")
+if [[ ! "${RELEASE_TAG}" =~ ^v ]]; then
+    RELEASE_TAG="v${RELEASE_TAG}"
+fi
 RELEASE_TAG_MESSAGE=$(get_release_tag_message "${RELEASE_VERSION}")
 git tag -a "${RELEASE_TAG}" -m "${RELEASE_TAG_MESSAGE}"
 git push "${REMOTE_REPO}" "${RELEASE_TAG}"
